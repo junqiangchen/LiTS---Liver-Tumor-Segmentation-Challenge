@@ -24,11 +24,11 @@ class LITSPreprocessor(object):
         """
         return: resized image in shape [depth, width, height]
         """
-        if not self.shape[:2] == [width, height]:
-            newimg = [cv2.resize(self.image[:,:,i], (width, height)) for i in range(self.depth)]
+        if not self.shape[:2] == (width, height):
+            newimg = [cv2.resize(self.image[:,:,i], (height, width)) for i in range(self.depth)]
             newimg = np.array(newimg)
         else:
-            newimg = self.image.transpose(1,2,0)
+            newimg = self.image.transpose(2,0,1)
         return newimg
 
 def main():
