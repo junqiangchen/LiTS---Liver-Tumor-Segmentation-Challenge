@@ -9,6 +9,10 @@
 
 **2、VNet implementation in the model of Vnet**
 
+## Result
+trained loss
+![](diceloss.PNG)
+
 ## Contact
 * https://github.com/junqiangchen
 * email: 1207173174@qq.com,ydx0902@gmail.com
