@@ -15,6 +15,6 @@ trained loss
 
 ## Contact
 * https://github.com/junqiangchen
-* email: 1207173174@qq.com,ydx0902@gmail.com
-* Contact:junqiangChen,dexianYe
+* email: 1207173174@qq.com,ydx0902@gmail.com,188123134@qq.com
+* Contact:junqiangChen,dexianYe,xingTao
 * WeChat Public number: 最新医学影像技术
