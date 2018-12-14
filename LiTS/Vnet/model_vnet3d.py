@@ -34,12 +34,12 @@ def down_sampling(x, kernal, phase, drop, image_z=None, height=None, width=None,
         return conv
 
 
-def deconv_relu(x, kernal, scope=None):
+def deconv_relu(x, kernal, samefeture=False, scope=None):
     with tf.name_scope(scope):
         W = weight_xavier_init(shape=kernal, n_inputs=kernal[0] * kernal[1] * kernal[2] * kernal[-1],
                                n_outputs=kernal[-2], activefunction='relu', variable_name=scope + 'W')
         B = bias_variable([kernal[-2]], variable_name=scope + 'B')
-        conv = deconv3d(x, W, True) + B
+        conv = deconv3d(x, W, samefeture, True) + B
         conv = tf.nn.relu(conv)
         return conv
 
@@ -47,7 +47,7 @@ def deconv_relu(x, kernal, scope=None):
 def conv_sigmod(x, kernal, scope=None):
     with tf.name_scope(scope):
         W = weight_xavier_init(shape=kernal, n_inputs=kernal[0] * kernal[1] * kernal[2] * kernal[3],
-                               n_outputs=kernal[-1], activefunction='sigmoid', variable_name=scope + 'W')
+                               n_outputs=kernal[-1], activefunction='sigomd', variable_name=scope + 'W')
         B = bias_variable([kernal[-1]], variable_name=scope + 'B')
         conv = conv3d(x, W) + B
         conv = tf.nn.sigmoid(conv)
@@ -185,8 +185,8 @@ class Vnet3dModule(object):
         :param costname: name of the cost function.Default is "dice coefficient"
     """
 
-    def __init__(self, image_height, image_width, image_depth, channels=1, costname="dice coefficient", inference=False,
-                 model_path=None):
+    def __init__(self, image_height, image_width, image_depth, channels=1, costname=("dice coefficient",),
+                 inference=False, model_path=None):
         self.image_width = image_width
         self.image_height = image_height
         self.image_depth = image_depth
@@ -202,8 +202,8 @@ class Vnet3dModule(object):
 
         self.Y_pred = _create_conv_net(self.X, self.image_depth, self.image_width, self.image_height, self.channels,
                                        self.phase, self.drop)
-        self.cost = self.__get_cost(costname)
-        self.accuracy = -self.__get_cost(costname)
+        self.cost = self.__get_cost(costname[0])
+        self.accuracy = -self.__get_cost(costname[0])
         if inference:
             init = tf.global_variables_initializer()
             saver = tf.train.Saver()
@@ -222,8 +222,13 @@ class Vnet3dModule(object):
             loss = -tf.reduce_mean(intersection / denominator)
         return loss
 
-    def train(self, train_images, train_labels, model_path, logs_path, learning_rate,
-              dropout_conv=0.8, train_epochs=10000, batch_size=1):
+    def train(self, train_images, train_lanbels, model_path, logs_path, learning_rate,
+              dropout_conv=0.8, train_epochs=5, batch_size=1):
+        if not os.path.exists(logs_path):
+            os.makedirs(logs_path)
+        if not os.path.exists(logs_path + "model\\"):
+            os.makedirs(logs_path + "model\\")
+        model_path = logs_path + "model\\" + model_path
         train_op = tf.train.AdamOptimizer(self.lr).minimize(self.cost)
 
         init = tf.global_variables_initializer()
@@ -232,16 +237,17 @@ class Vnet3dModule(object):
         tf.summary.scalar("loss", self.cost)
         tf.summary.scalar("accuracy", self.accuracy)
         merged_summary_op = tf.summary.merge_all()
-        sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=True))
+        sess = tf.InteractiveSession(config=tf.ConfigProto(allow_soft_placement=True, log_device_placement=False))
         summary_writer = tf.summary.FileWriter(logs_path, graph=tf.get_default_graph())
         sess.run(init)
 
         DISPLAY_STEP = 1
         index_in_epoch = 0
 
+        train_epochs = train_images.shape[0] * train_epochs
         for i in range(train_epochs):
             # get new batch
-            batch_xs_path, batch_ys_path, index_in_epoch = _next_batch(train_images, train_labels, batch_size,
+            batch_xs_path, batch_ys_path, index_in_epoch = _next_batch(train_images, train_lanbels, batch_size,
                                                                        index_in_epoch)
             batch_xs = np.empty((len(batch_xs_path), self.image_depth, self.image_height, self.image_width,
                                  self.channels))
@@ -278,17 +284,17 @@ class Vnet3dModule(object):
                                                         self.phase: 1,
                                                         self.drop: 1})
 
-                gt = np.reshape(batch_xs[0], (64, 128, 128))
+                gt = np.reshape(batch_xs[0], (self.image_depth, self.image_height, self.image_width))
                 gt = gt.astype(np.float32)
-                save_images(gt, [8, 8], path='img/Vnet/' + 'src_%d_epoch.png' % (i))
+                save_images(gt, [4, 4], path=logs_path + 'src_%d_epoch.png' % (i))
 
-                gt = np.reshape(batch_ys[0], (64, 128, 128))
+                gt = np.reshape(batch_ys[0], (self.image_depth, self.image_height, self.image_width))
                 gt = gt.astype(np.float32)
-                save_images(gt, [8, 8], path='img/Vnet/' + 'gt_%d_epoch.png' % (i))
+                save_images(gt, [4, 4], path=logs_path + 'gt_%d_epoch.png' % (i))
 
-                result = np.reshape(pred[0], (64, 128, 128))
+                result = np.reshape(pred[0], (self.image_depth, self.image_height, self.image_width))
                 result = result.astype(np.float32)
-                save_images(result, [8, 8], path='img/Vnet/' + 'predict_%d_epoch.png' % (i))
+                save_images(result, [4, 4], path=logs_path + 'predict_%d_epoch.png' % (i))
 
                 save_path = saver.save(sess, model_path, global_step=i)
                 print("Model saved in file:", save_path)

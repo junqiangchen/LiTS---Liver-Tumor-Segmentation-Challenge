@@ -1,48 +1,49 @@
 '''
 covlution layer，pool layer，initialization。。。。
 '''
+from __future__ import division
 import tensorflow as tf
 import numpy as np
 import cv2
 
 
 # Weight initialization (Xavier's init)
-def weight_xavier_init(shape, n_inputs, n_outputs, activefunction='sigmoid', uniform=True, variable_name=None):
+def weight_xavier_init(shape, n_inputs, n_outputs, activefunction='sigomd', uniform=True, variable_name=None):
     with tf.device('/cpu:0'):
-        if activefunction == 'sigmoid':
+        if activefunction == 'sigomd':
             if uniform:
                 init_range = tf.sqrt(6.0 / (n_inputs + n_outputs))
                 initial = tf.random_uniform(shape, -init_range, init_range)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
             else:
                 stddev = tf.sqrt(2.0 / (n_inputs + n_outputs))
                 initial = tf.truncated_normal(shape, mean=0.0, stddev=stddev)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
         elif activefunction == 'relu':
             if uniform:
                 init_range = tf.sqrt(6.0 / (n_inputs + n_outputs)) * np.sqrt(2)
                 initial = tf.random_uniform(shape, -init_range, init_range)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
             else:
                 stddev = tf.sqrt(2.0 / (n_inputs + n_outputs)) * np.sqrt(2)
                 initial = tf.truncated_normal(shape, mean=0.0, stddev=stddev)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
         elif activefunction == 'tan':
             if uniform:
                 init_range = tf.sqrt(6.0 / (n_inputs + n_outputs)) * 4
                 initial = tf.random_uniform(shape, -init_range, init_range)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
             else:
                 stddev = tf.sqrt(2.0 / (n_inputs + n_outputs)) * 4
                 initial = tf.truncated_normal(shape, mean=0.0, stddev=stddev)
-                return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+                return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
 
 
 # Bias initialization
 def bias_variable(shape, variable_name=None):
     with tf.device('/cpu:0'):
         initial = tf.constant(0.1, shape=shape)
-        return tf.get_variable(initializer=initial, trainable=True, name=variable_name)
+        return tf.get_variable(name=variable_name, initializer=initial, trainable=True)
 
 
 # 3D convolution
@@ -51,18 +52,40 @@ def conv3d(x, W, stride=1):
     return conv_3d
 
 
-# 3D deconvolution
+# 3D upsampling
+def upsample3d(x, scale_factor, scope=None):
+    ''''
+    X shape is [nsample,dim,rows, cols, channel]
+    out shape is[nsample,dim*scale_factor,rows*scale_factor, cols*scale_factor, channel]
+    '''
+    x_shape = tf.shape(x)
+    k = tf.ones([scale_factor, scale_factor, scale_factor, x_shape[-1], x_shape[-1]])
+    # note k.shape = [dim,rows, cols, depth_in, depth_output]
+    output_shape = tf.stack(
+        [x_shape[0], x_shape[1] * scale_factor, x_shape[2] * scale_factor, x_shape[3] * scale_factor, x_shape[4]])
+    upsample = tf.nn.conv3d_transpose(value=x, filter=k, output_shape=output_shape,
+                                      strides=[1, scale_factor, scale_factor, scale_factor, 1],
+                                      padding='SAME', name=scope)
+    return upsample
 
-def deconv3d(x, W, depth=False):
+
+# 3D deconvolution
+def deconv3d(x, W, samefeature=False, depth=False):
     """
     depth flag:False is z axis is same between input and output,true is z axis is input is twice than output
     """
     x_shape = tf.shape(x)
     if depth:
-        output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3] * 2, x_shape[4] // 2])
+        if samefeature:
+            output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3] * 2, x_shape[4]])
+        else:
+            output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3] * 2, x_shape[4] // 2])
         deconv = tf.nn.conv3d_transpose(x, W, output_shape, strides=[1, 2, 2, 2, 1], padding='SAME')
     else:
-        output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3], x_shape[4] // 2])
+        if samefeature:
+            output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3], x_shape[4]])
+        else:
+            output_shape = tf.stack([x_shape[0], x_shape[1] * 2, x_shape[2] * 2, x_shape[3], x_shape[4] // 2])
         deconv = tf.nn.conv3d_transpose(x, W, output_shape, strides=[1, 2, 2, 1, 1], padding='SAME')
     return deconv
 
