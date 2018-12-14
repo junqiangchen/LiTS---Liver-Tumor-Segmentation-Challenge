@@ -9,9 +9,19 @@
 
 **2、VNet implementation in the model of Vnet**
 
+**3、train and predict in the script of vnet3d_train.py and vnet3d_predict.py**
+
+**4、trained model can download on here:https://pan.baidu.com/s/1BCLetHEot5dXKm3PBO9bOg, password：ucbv**
+
+**5、LiTS data have 130 cases,using 0-110 cases trainging,and other is testing.testing result can download on here:https://pan.baidu.com/s/1A_-u7tJcn7rIqnrLaSqi4A password：22es** 
+
 ## Result
-trained loss
+Trained Loss
 ![](diceloss.PNG)
+
+Segment Result
+first col is srcimage,second col is GroundTruth Mask image,third col is VNet segmentation image
+![](GTvsVNet.bmp)
 
 ## Contact
 * https://github.com/junqiangchen
