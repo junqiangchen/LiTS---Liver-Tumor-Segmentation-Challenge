@@ -1,6 +1,15 @@
 from tensorflow.python.framework import graph_util
 from tensorflow.python.framework import graph_io
 import tensorflow as tf
+import numpy as np
+
+
+def getdice(Y_pred,Y_gt,K=255):
+    intersection=2*np.sum(Y_pred[Y_gt==K])
+    denominator=np.sum(Y_pred)+np.sum(Y_gt)
+    loss=(intersection/denominator)
+    return loss
+    
 
 
 def convertMetaModelToPbModel(meta_model, pb_model):
