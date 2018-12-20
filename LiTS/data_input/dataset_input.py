@@ -79,13 +79,14 @@ def _preprocess_function(image_decoded, mask_decoded):
         assert len(contrast_range) == 2 and isinstance(contrast_range, list), '==> Error: saturation_range error.'
         image = tf.image.random_contrast(image, *contrast_range)
 
+    # make sure pixel value in 0~1
     image = tf.clip_by_value(image, 0.0, 1.0)
 
     return image, mask
 
 def datagenerator(imagecsv_path, maskcsv_path, batch_size):
     """
-    return: next_batch = image, mask
+    return: data iterator
     """
     df_image = pd.read_csv(imagecsv_path)
     df_mask = pd.read_csv(maskcsv_path)
