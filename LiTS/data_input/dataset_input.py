@@ -19,14 +19,14 @@ def _parse_function(image, mask, image_type='jpg'):
     image_string = tf.read_file(image)
     mask_string = tf.read_file(mask)
     if image_type == 'jpg':
-        image_decoded = tf.image.decode_jpeg(image_string)
-        mask_decoded = tf.image.decode_jpeg(mask_string)
+        image_decoded = tf.image.decode_jpeg(image_string, 0)
+        mask_decoded = tf.image.decode_jpeg(mask_string, 1)
     elif image_type == 'png':
-        image_decoded = tf.image.decode_png(image_string)
-        mask_decoded = tf.image.decode_png(mask_string)
+        image_decoded = tf.image.decode_png(image_string, 0)
+        mask_decoded = tf.image.decode_png(mask_string, 1)
     elif image_type == 'bmp':
-        image_decoded = tf.image.decode_bmp(image_string)
-        mask_decoded = tf.image.decode_bmp(mask_string)
+        image_decoded = tf.image.decode_bmp(image_string, 0)
+        mask_decoded = tf.image.decode_bmp(mask_string, 1)
     else:
         raise TypeError('==> Error: Only support jpg, png and bmp.')
         
