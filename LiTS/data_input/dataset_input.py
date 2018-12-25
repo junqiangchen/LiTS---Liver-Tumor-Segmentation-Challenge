@@ -15,7 +15,11 @@ preprocessing_dict = {'resize_shape':[512, 512],
                       'contrast':True,
                       'contrast_range':[0.5, 1.5]}
 
-def _parse_function(image, mask, image_type='jpg'):
+image_type = 'jpg'
+
+#TODO how to add image_type and preprocessing_dict as addition arg in map function
+
+def _parse_function(image, mask):
     image_string = tf.read_file(image)
     mask_string = tf.read_file(mask)
     if image_type == 'jpg':
