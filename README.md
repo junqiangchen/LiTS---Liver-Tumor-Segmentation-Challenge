@@ -21,6 +21,9 @@ Trained Loss
 
 Liver Segment Result
 
+Liver leaderboard
+![](liverleadboard.PNG)
+
 test case segmentation result can see in the file of 35.mp4,38.mp4 and 51.mp4
 
 first col is srcimage,second col is GroundTruth Mask image,third col is VNet segmentation image
