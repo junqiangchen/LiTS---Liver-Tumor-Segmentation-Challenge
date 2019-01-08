@@ -22,7 +22,7 @@ Trained Loss
 Liver Segment Result
 
 Liver leaderboard
-![](liverleadboard.PNG)
+![](livertop30.PNG)
 
 test case segmentation result can see in the file of 35.mp4,38.mp4 and 51.mp4
 
@@ -30,7 +30,7 @@ first col is srcimage,second col is GroundTruth Mask image,third col is VNet seg
 ![](GTvsVNet.bmp)
 
 Lesion leaderboard
-![](3dVNet+liver.PNG)
+![](tumortop34.PNG)
 
 ## Contact
 * https://github.com/junqiangchen
