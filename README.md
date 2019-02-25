@@ -5,15 +5,22 @@
 ## How to Use
 (re)implemented the model with tensorflow in the paper of "Milletari, F., Navab, N., & Ahmadi, S. A. (2016) V-net: Fully convolutional neural networks for volumetric medical image segmentation.3DV 2016"
 
-**1、get the patch srcimages and maskimages in the script of getPatchImageAndMask.py**
+**1、Preprocess**
+* LiTS data of image and mask are all type of .nii files,in order to trainging and visulization,convert .nii file to .bmp file. 
+* Liver data preparing,i have try many patch size,and finally using the patch(256,256,16):run the getPatchImageAndMask.py
+* Tumor data preparing,using the patch(256,256,16):run the getPatchImageAndMask.py,disable the line gen_image_mask(srcimg, seg_liverimage, i, shape=(16, 256, 256), numberxy=5, numberz=10) and enable the line gen_image_mask(srcimg, seg_tumorimage, i, shape=(16, 256, 256), numberxy=5, numberz=10),and change the trainLiverMask to trainTumorMask
+* last save all the data into csv file like this:G:\Data\segmentation\Image/0_161....
 
-**2、VNet implementation in the model of Vnet**
+**2、Liver and Tumor Segmentation**
+* the VNet model
 
-**3、train and predict in the script of vnet3d_train.py and vnet3d_predict.py**
+![](3dVNet.png) 
 
-**4、liver segmentation trained model,log,test data can download on here:https://pan.baidu.com/s/1ijK6BG3vZM4nHwZ6S2yFiw, password：74j5**
+* train and predict in the script of vnet3d_train.py and vnet3d_predict.py
 
-**5、LiTS data have 130 cases,using 0-110 cases trainging,and other is testing.testing result can download on here:https://pan.baidu.com/s/1A_-u7tJcn7rIqnrLaSqi4A password：22es** 
+**3、download resource**
+* liver segmentation trained model,log,test data can download on here:https://pan.baidu.com/s/1ijK6BG3vZM4nHwZ6S2yFiw, password：74j5 
+* LiTS data have 130 cases,using 0-110 cases trainging,and other is testing.testing result can download on here:https://pan.baidu.com/s/1A_-u7tJcn7rIqnrLaSqi4A password：22es 
 
 ## Result
 Trained Loss
