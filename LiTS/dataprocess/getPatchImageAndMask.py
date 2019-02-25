@@ -4,9 +4,9 @@ import numpy as np
 import cv2
 import os
 
-trainImage = "D:\Data\LIST\\3dPatchdata_12812864\Image"
-trainLiverMask = "D:\Data\LIST\\3dPatchdata_12812864\MaskLiver"
-trainTumorMask = "D:\Data\LIST\\3dPatchdata_12812864\MaskTumor"
+trainImage = "D:\Data\LIST\\3dPatchdata_25625616\Image"
+trainLiverMask = "D:\Data\LIST\\3dPatchdata_25625616\MaskLiver"
+trainTumorMask = "D:\Data\LIST\\3dPatchdata_25625616\MaskTumor"
 
 
 def getRangImageDepth(image):
@@ -143,14 +143,14 @@ def load_itk(filename):
 def gen_image_mask(srcimg, seg_image, index, shape, numberxy, numberz):
     # step 1 get mask effective range(startpostion:endpostion)
     startpostion, endpostion = getRangImageDepth(seg_image)
-    # step 2 get subimages (numberxy*numberxy*numberz,64, 128, 128)
+    # step 2 get subimages (numberxy*numberxy*numberz,16, 256, 256)
     sub_srcimages = make_patch(srcimg, patch_block_size=shape, numberxy=numberxy, numberz=numberz,
                                startpostion=startpostion,
                                endpostion=endpostion)
     sub_liverimages = make_patch(seg_image, patch_block_size=shape, numberxy=numberxy, numberz=numberz,
                                  startpostion=startpostion,
                                  endpostion=endpostion)
-    # step 3 only save subimages (numberxy*numberxy*numberz,64, 128, 128)
+    # step 3 only save subimages (numberxy*numberxy*numberz,16, 256, 256)
     samples, imagez = np.shape(sub_srcimages)[0], np.shape(sub_srcimages)[1]
     for j in range(samples):
         sub_masks = sub_liverimages.astype(np.float32)
@@ -182,7 +182,8 @@ def preparetraindata():
         seg_tumorimage = segimg.copy()
         seg_tumorimage[segimg == 1] = 0
         seg_tumorimage[segimg == 2] = 255
-        gen_image_mask(srcimg, seg_liverimage, i, shape=(64, 128, 128), numberxy=5, numberz=10)
+        gen_image_mask(srcimg, seg_liverimage, i, shape=(16, 256, 256), numberxy=5, numberz=10)
+		# gen_image_mask(srcimg, seg_tumorimage, i, shape=(16, 256, 256), numberxy=5, numberz=10)
 
 
 preparetraindata()
