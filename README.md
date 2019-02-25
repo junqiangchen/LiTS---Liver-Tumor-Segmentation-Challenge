@@ -6,8 +6,8 @@
 (re)implemented the model with tensorflow in the paper of "Milletari, F., Navab, N., & Ahmadi, S. A. (2016) V-net: Fully convolutional neural networks for volumetric medical image segmentation.3DV 2016"
 
 **1、Preprocess**
-* LiTS data of image and mask are all type of .nii files,in order to trainging and visulization,convert .nii file to .bmp file. 
-* Liver data preparing,i have try many patch size,and finally using the patch(256,256,16):run the getPatchImageAndMask.py
+* LiTS data of image and mask are all type of .nii files,in order to train and visulise,convert .nii file to .bmp file. 
+* Liver data preparing,i have tried many patch size,and finally using the patch(256,256,16),if you have better GPU,you can change 16 to 24 or 32:run the getPatchImageAndMask.py
 * Tumor data preparing,using the patch(256,256,16):run the getPatchImageAndMask.py,disable the line gen_image_mask(srcimg, seg_liverimage, i, shape=(16, 256, 256), numberxy=5, numberz=10) and enable the line gen_image_mask(srcimg, seg_tumorimage, i, shape=(16, 256, 256), numberxy=5, numberz=10),and change the trainLiverMask to trainTumorMask
 * last save all the data into csv file like this:G:\Data\segmentation\Image/0_161....
 
