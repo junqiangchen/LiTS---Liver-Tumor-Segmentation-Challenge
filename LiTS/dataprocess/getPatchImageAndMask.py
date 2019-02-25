@@ -183,7 +183,7 @@ def preparetraindata():
         seg_tumorimage[segimg == 1] = 0
         seg_tumorimage[segimg == 2] = 255
         gen_image_mask(srcimg, seg_liverimage, i, shape=(16, 256, 256), numberxy=5, numberz=10)
-		# gen_image_mask(srcimg, seg_tumorimage, i, shape=(16, 256, 256), numberxy=5, numberz=10)
+	# gen_image_mask(srcimg, seg_tumorimage, i, shape=(16, 256, 256), numberxy=5, numberz=10)
 
 
 preparetraindata()
