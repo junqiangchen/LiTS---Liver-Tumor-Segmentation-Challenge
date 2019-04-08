@@ -12,10 +12,12 @@
 * last save all the data folder path into csv file: run the utils.py
 
 the file like this:
-G:\Data\segmentation\Image/0_161
-G:\Data\segmentation\Image/0_162
-G:\Data\segmentation\Image/0_163
 
+G:\Data\segmentation\Image/0_161
+
+G:\Data\segmentation\Image/0_162
+
+G:\Data\segmentation\Image/0_163
 
 **2、Liver and Tumor Segmentation**
 * the VNet model
