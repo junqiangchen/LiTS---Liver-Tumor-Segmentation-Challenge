@@ -29,6 +29,7 @@ G:\Data\segmentation\Image/0_163
 **3、download resource**
 * liver segmentation trained model,log,test data can download on here:https://pan.baidu.com/s/1ijK6BG3vZM4nHwZ6S2yFiw, password：74j5 
 * LiTS data have 130 cases,using 0-110 cases trainging,and other is testing.testing result can download on here:https://pan.baidu.com/s/1A_-u7tJcn7rIqnrLaSqi4A password：22es 
+* LiTS train and test source data can download here:https://pan.baidu.com/s/1-kxJ7reS4kq5ypitfmQxeg password：nlrd 
 
 ## Result
 Trained Loss
