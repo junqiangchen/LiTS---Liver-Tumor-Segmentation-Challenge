@@ -15,7 +15,7 @@ def file_name_path(file_dir):
 
 def save_file2csv(file_dir, file_name):
     """
-    save file path to csv
+    save file path to csv，
     :param file_dir:preprocess data path
     :param file_name:output csv name
     :return:
