@@ -2,6 +2,15 @@
 > This is an example of the CT images Segment from LiTS---Liver-Tumor-Segmentation-Challenge
 ![](LiTS_header.jpg)
 
+## Prerequisities
+The following dependencies are needed:
+- numpy >= 1.11.1
+- SimpleITK >=1.0.1
+- opencv-python >=3.3.0
+- tensorflow-gpu ==1.8.0
+- pandas >=0.20.1
+- scikit-learn >= 0.17.1
+
 ## How to Use
 (re)implemented the model with tensorflow in the paper of "Milletari, F., Navab, N., & Ahmadi, S. A. (2016) V-net: Fully convolutional neural networks for volumetric medical image segmentation.3DV 2016"
 
