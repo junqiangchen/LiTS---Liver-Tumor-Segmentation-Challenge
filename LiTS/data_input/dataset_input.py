@@ -104,8 +104,8 @@ def datagenerator(imagecsv_path, maskcsv_path, batch_size):
     dataset = tf.data.Dataset.from_tensor_slices((image_filenames, mask_filenames))
     dataset = dataset.shuffle(buffer_size=10000)
     dataset = dataset.repeat()
-    dataset = dataset.map(_parse_function)
-    dataset = dataset.map(_preprocess_function)
+    dataset = dataset.map(_parse_function,num_parallel_calls=tf.data.experimental.AUTOTUNE)
+    dataset = dataset.map(_preprocess_function,num_parallel_calls=tf.data.experimental.AUTOTUNE)
     dataset = dataset.batch(batch_size)
     data_iterator = dataset.make_initializable_iterator()
 
